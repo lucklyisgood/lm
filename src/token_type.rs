@@ -4,6 +4,8 @@ use std::fmt::Display;
 pub enum TokenType {
     // 单一字符
     Semicolon,
+    LeftParen,
+    RightParen,
 
     // 一个或多个字符
     Eq,

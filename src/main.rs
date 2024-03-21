@@ -1,14 +1,12 @@
-use scanner::Scanner;
 
-mod token_type;
-mod scanner;
+use lm::scanner::Scanner;
 
 fn main() {
     let mut scan = Scanner::new("
     let a  = 10;
     let c = 10.10;
     let b = \"hello world\";
-    println b;
+    println(b);
 ");
     
     match scan.scan_tokens() {
