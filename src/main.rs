@@ -1,7 +1,7 @@
-use scanner::Scanner;
-
 mod scanner;
 mod token_type;
+
+use lm::scanner::Scanner;
 
 fn main() {
     let mut scan = Scanner::new(
@@ -9,7 +9,7 @@ fn main() {
     let a  = 10;
     let c = 10.10;
     let b = \"hello world\";
-    println b;
+    println(b);
 ",
     );
 

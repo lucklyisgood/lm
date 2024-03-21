@@ -74,8 +74,12 @@ impl Scanner {
                 self.add_token(token);
             }
             ';' => self.add_token(Semicolon),
+            '(' => self.add_token(LeftParen),
+            ')' => self.add_token(RightParen),
+
             ' ' | '\r' | '\t' => {}
             '\n' => self.line += 1,
+
             '"' => self.string()?,
             c => {
                 if c.is_ascii_digit() {
@@ -200,4 +204,3 @@ impl Scanner {
 // mod tests {
 //     use super::*;
 // }
-
