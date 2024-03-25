@@ -1,6 +1,5 @@
 use lm::scanner::Scanner;
 
-
 #[test]
 fn keyword_test() {
     let mut scan = Scanner::new("let");
@@ -10,7 +9,7 @@ fn keyword_test() {
 
     let tokens = result.unwrap();
 
-    assert_eq!(tokens.len(), 1);
+    assert_eq!(tokens.len(), 2);
 }
 
 #[test]
@@ -22,5 +21,6 @@ fn string_test() {
 
     let tokens = result.unwrap();
 
-    assert_eq!(tokens.len(), 1);
+    assert_eq!(tokens.len(), 2);
 }
+

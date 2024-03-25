@@ -1,6 +1,3 @@
-mod scanner;
-mod token_type;
-
 use lm::scanner::Scanner;
 
 fn main() {
