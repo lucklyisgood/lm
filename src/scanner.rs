@@ -5,10 +5,7 @@ use crate::token_type::{LiteralValue, Token, TokenType};
 use TokenType::*;
 
 fn get_keywords() -> HashMap<&'static str, TokenType> {
-    HashMap::from([
-        ("println", Println),
-        ("let", Let)
-    ])
+    HashMap::from([("println", Println), ("let", Let)])
 }
 
 pub struct Scanner {
@@ -18,7 +15,7 @@ pub struct Scanner {
 
     source: String,
     tokens: Vec<Token>,
-    
+
     keywords: HashMap<&'static str, TokenType>,
 }
 
@@ -45,6 +42,13 @@ impl Scanner {
             }
         }
 
+        self.tokens.push(Token {
+            token_type: Eof,
+            lexeme: "".to_string(),
+            literal: None,
+            line_nu: self.line,
+        });
+
         if errors.len() > 0 {
             let mut err_str = "".to_string();
             for err in errors {
@@ -66,15 +70,11 @@ impl Scanner {
 
         match ch {
             '=' => {
-                let token = if self.char_match('=') {
-                    EqEq
-                } else {
-                    Eq
-                };
+                let token = if self.char_match('=') { EqEq } else { Eq };
                 self.add_token(token);
-            },
+            }
             ';' => self.add_token(Semicolon),
-            ' ' | '\r' | '\t' => {},
+            ' ' | '\r' | '\t' => {}
             '\n' => self.line += 1,
             '"' => self.string()?,
             c => {
@@ -129,7 +129,7 @@ impl Scanner {
         if self.is_at_end() {
             return false;
         }
-        
+
         if self.peek() != ch {
             return false;
         } else {
@@ -152,9 +152,12 @@ impl Scanner {
 
         self.next_char();
 
-        let value = &self.source[self.start + 1 .. self.cur - 1];
-        
-        self.add_token_lit(StringLit, Some(LiteralValue::StringValue(value.to_string())));
+        let value = &self.source[self.start + 1..self.cur - 1];
+
+        self.add_token_lit(
+            StringLit,
+            Some(LiteralValue::StringValue(value.to_string())),
+        );
 
         Ok(())
     }
@@ -170,7 +173,7 @@ impl Scanner {
                 self.next_char();
             }
         }
-        let str_val = &self.source[self.start .. self.cur];
+        let str_val = &self.source[self.start..self.cur];
         let val = str_val.parse::<f64>();
         match val {
             Ok(val) => self.add_token_lit(Number, Some(LiteralValue::NumberValue(val))),
@@ -184,7 +187,7 @@ impl Scanner {
         }
 
         let val = &self.source[self.start..self.cur];
-        
+
         if let Some(&ttype) = self.keywords.get(val) {
             self.add_token(ttype);
         } else {
@@ -197,3 +200,4 @@ impl Scanner {
 // mod tests {
 //     use super::*;
 // }
+

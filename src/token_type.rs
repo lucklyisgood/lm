@@ -17,6 +17,8 @@ pub enum TokenType {
     // 关键字
     Println,
     Let,
+
+    Eof,
 }
 
 impl Display for TokenType {
@@ -44,3 +46,4 @@ impl ToString for Token {
         format!("{} {} {:?}", self.token_type, self.lexeme, self.literal)
     }
 }
+
