@@ -76,6 +76,58 @@ impl Scanner {
             ';' => self.add_token(Semicolon),
             '(' => self.add_token(LeftParen),
             ')' => self.add_token(RightParen),
+            '+' => self.add_token(Plus),
+            '-' => self.add_token(Minus),
+            '*' => self.add_token(Star),
+
+            '!' => {
+                let token = if self.char_match('=') { BangEq } else { Bang };
+                self.add_token(token);
+            }
+            '=' => {
+                let token = if self.char_match('=') { EqEq } else { Eq };
+
+                self.add_token(token);
+            }
+            '<' => {
+                let token = if self.char_match('=') {
+                    LessEq
+                } else if self.char_match('-') {
+                    Gets
+                } else {
+                    Less
+                };
+
+                self.add_token(token);
+            }
+            '>' => {
+                let token = if self.char_match('=') {
+                    GreaterEq
+                } else {
+                    Greater
+                };
+
+                self.add_token(token);
+            }
+            '/' => {
+                if self.char_match('/') {
+                    loop {
+                        if self.peek() == '\n' || self.is_at_end() {
+                            break;
+                        }
+                        self.next_char();
+                    }
+                } else {
+                    self.add_token(Slash);
+                }
+            }
+            '|' => {
+                if self.char_match('>') {
+                    self.add_token(Pipe);
+                } else {
+                    return Err(format!("Expected '>' at line {}", self.line));
+                }
+            }
 
             ' ' | '\r' | '\t' => {}
             '\n' => self.line += 1,

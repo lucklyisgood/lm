@@ -1,20 +1,20 @@
-use lm::scanner::Scanner;
+use lm::{parser::Parser, scanner::Scanner};
 
 fn main() {
     let mut scan = Scanner::new(
         "
-    let a  = 10;
-    let c = 10.10;
-    let b = \"hello world\";
-    println(b);
+    10 * 10 - 1
 ",
     );
 
     match scan.scan_tokens() {
         Ok(tokens) => {
-            for token in tokens {
+            for token in &tokens {
                 println!("{:?}", token);
             }
+
+            let mut parser = Parser::new(tokens);
+            println!("{:?}", parser.parse());
         }
         Err(e) => println!("{:?}", e),
     }

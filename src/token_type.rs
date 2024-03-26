@@ -3,13 +3,25 @@ use std::fmt::Display;
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum TokenType {
     // 单一字符
-    Semicolon,
-    LeftParen,
-    RightParen,
+    Semicolon,  //;
+    LeftParen,  //(
+    RightParen, //)
+    Minus,      // => -
+    Plus,       // => +
+    Slash,      // => /
+    Star,       // => *
 
     // 一个或多个字符
+    Bang,   // => !
+    BangEq, // => !=
+    Less,
+    LessEq,
+    Greater,
+    GreaterEq,
     Eq,
     EqEq,
+    Pipe, // |>
+    Gets, // <-
 
     // 字面量(Literals)
     Identifier,
@@ -48,4 +60,3 @@ impl ToString for Token {
         format!("{} {} {:?}", self.token_type, self.lexeme, self.literal)
     }
 }
-
