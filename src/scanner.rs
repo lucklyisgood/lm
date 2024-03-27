@@ -69,10 +69,6 @@ impl Scanner {
         let ch = self.next_char();
 
         match ch {
-            '=' => {
-                let token = if self.char_match('=') { EqEq } else { Eq };
-                self.add_token(token);
-            }
             ';' => self.add_token(Semicolon),
             '(' => self.add_token(LeftParen),
             ')' => self.add_token(RightParen),

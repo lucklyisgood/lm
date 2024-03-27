@@ -1,5 +1,6 @@
 use crate::{
     expr::{self, Expr},
+    stmt::Stmt,
     token_type::{
         Token,
         TokenType::{self, *},
@@ -34,8 +35,50 @@ impl Parser {
         }
     }
 
-    pub fn parse(&mut self) -> Result<Expr, String> {
-        self.expression()
+    pub fn parse(&mut self) -> Result<Vec<Stmt>, String> {
+        let mut stmts = vec![];
+        let mut errors = vec![];
+
+        while !self.is_at_end() {
+            match self.declaration() {
+                Ok(stmt) => {
+                    stmts.push(stmt);
+                }
+                Err(e) => {
+                    errors.push(e);
+                }
+            }
+        }
+
+        if errors.len() == 0 {
+            Ok(stmts)
+        } else {
+            Err(errors.join("\n"))
+        }
+    }
+
+    fn declaration(&mut self) -> Result<Stmt, String> {
+        self.statement()
+    }
+
+    fn statement(&mut self) -> Result<Stmt, String> {
+        if self.match_token(Println) {
+            self.expression_print()
+        } else {
+            self.expression_statement()
+        }
+    }
+
+    fn expression_print(&mut self) -> Result<Stmt, String> {
+        let expr = self.expression()?;
+        self.consume(Semicolon, "Expected ';' after expression.")?;
+        Ok(Stmt::Print { expression: expr })
+    }
+
+    fn expression_statement(&mut self) -> Result<Stmt, String> {
+        let expr = self.expression()?;
+        self.consume(Semicolon, "Expected ';' after expression.")?;
+        Ok(Stmt::Expression { expression: expr })
     }
 
     fn _synchronize(&mut self) {
