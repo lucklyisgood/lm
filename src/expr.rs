@@ -66,6 +66,10 @@ pub enum Expr {
         id: usize,
         value: LiteralValue,
     },
+    Var {
+        id: usize,
+        value: Token,
+    },
 }
 
 impl Expr {
@@ -105,6 +109,7 @@ impl Expr {
             }
             Expr::Grouping { id: _, expression } => expression.evaluate(),
             Expr::Literal { id: _, value } => Ok((*value).clone()),
+            Expr::Var { id: _, value } => todo!(),
         }
     }
 }

@@ -1,5 +1,6 @@
 use crate::{
     expr::{self, Expr},
+    interpreter,
     stmt::Stmt,
     token_type::{
         Token,
@@ -9,6 +10,15 @@ use crate::{
 
 /*
 越往下优先级越高
+# 语句
+program        → declaration* EOF ;
+declaration    → varDecl
+               | statement ;
+statement      → exprStmt
+               | printStmt ;
+varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
+
+# 表达式
 expression     → equality ;
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
@@ -17,7 +27,12 @@ factor         → unary ( ( "/" | "*" ) unary )* ;
 unary          → ( "!" | "-" ) unary
                | primary ;
 primary        → NUMBER | STRING | "true" | "false" | "nil"
-               | "(" expression ")" ;
+               | "(" expression ")"
+               | IDENTIFIER ;
+*/
+
+/*
+
 */
 
 pub struct Parser {
@@ -58,7 +73,27 @@ impl Parser {
     }
 
     fn declaration(&mut self) -> Result<Stmt, String> {
-        self.statement()
+        if self.match_token(Let) {
+            self.var_declaration()
+        } else {
+            self.statement()
+        }
+    }
+
+    fn var_declaration(&mut self) -> Result<Stmt, String> {
+        let token = self.consume(Identifier, "Expected variable name")?;
+        let initializer;
+        if self.match_token(Eq) {
+            initializer = self.expression()?;
+        } else {
+            return Err("variiable not found =".to_string());
+        }
+        self.consume(Semicolon, "Expected ';' after variable declaration")?;
+
+        Ok(Stmt::Var {
+            name: token,
+            initializer,
+        })
     }
 
     fn statement(&mut self) -> Result<Stmt, String> {
@@ -181,6 +216,13 @@ impl Parser {
         let token = self.peek();
         let result;
         match token.token_type {
+            Identifier => {
+                self.advance();
+                result = Expr::Var {
+                    id: self.get_id(),
+                    value: self.previous(),
+                };
+            }
             LeftParen => {
                 self.advance();
                 let expr = self.expression()?;

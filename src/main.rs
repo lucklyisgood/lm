@@ -3,7 +3,7 @@ use lm::{interpreter::Interpreter, parser::Parser, scanner::Scanner};
 fn main() {
     let mut scan = Scanner::new(
         "
-    println(1 + 10 * 10 + 1);
+    println 1 + 10 * 10 + 1;
 ",
     );
 
